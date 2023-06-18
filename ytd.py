@@ -1,12 +1,16 @@
 import streamlit as st
 from pytube import YouTube
 import os
+import shutil
+from pathlib import Path
 
-def download_audio(url, output_path):
+def download_audio(url):
     try:
         yt = YouTube(url)
         audio = yt.streams.filter(only_audio=True).first()
         st.text("Downloading audio...")
+        output_path = Path.home() / "Music" / yt.title  # Het pad naar de "Muziek" map met de naam van de YouTube-video
+        output_path.mkdir(parents=True, exist_ok=True)
         audio.download(output_path=output_path)
         st.text("Audio downloaded successfully.")
     except Exception as e:
@@ -17,9 +21,7 @@ def main():
     url = st.text_input("Enter YouTube video URL:")
     if st.button("Download Audio"):
         if url:
-            download_dir = "muziek"  # Hier wordt de map "muziek" gebruikt om de audiobestanden op te slaan
-            os.makedirs(download_dir, exist_ok=True)
-            download_audio(url, download_dir)
+            download_audio(url)
 
 if __name__ == "__main__":
     main()
