@@ -1,27 +1,27 @@
 import streamlit as st
+import pandas as pd
 from pytube import YouTube
-import os
-import shutil
-from pathlib import Path
-
-def download_audio(url):
-    try:
-        yt = YouTube(url)
-        audio = yt.streams.filter(only_audio=True).first()
-        st.text("Downloading audio...")
-        output_path = Path.home() / "Music" / yt.title  # Het pad naar de "Muziek" map met de naam van de YouTube-video
-        output_path.mkdir(parents=True, exist_ok=True)
-        audio.download(output_path=output_path)
-        st.text("Audio downloaded successfully.")
-    except Exception as e:
-        st.error(f"Error occurred: {str(e)}")
-
+import base64
+from io import BytesIO
 def main():
-    st.title("YouTube Audio Downloader")
-    url = st.text_input("Enter YouTube video URL:")
-    if st.button("Download Audio"):
-        if url:
-            download_audio(url)
-
-if __name__ == "__main__":
-    main()
+	path = st.text_input('Enter URL of any youtube video')
+	option = st.selectbox(
+     'Select type of download',
+     ('audio', 'highest_resolution', 'lowest_resolution'))
+	
+	matches = ['audio', 'highest_resolution', 'lowest_resolution']
+	if st.button("download"): 
+		video_object =  YouTube(path)
+		st.write("Title of Video: " + str(video_object.title))
+		st.write("Number of Views: " + str(video_object.views))
+		if option=='audio':
+			video_object.streams.get_audio_only().download() 		#base64.b64encode("if file is too large").decode()	
+		elif option=='highest_resolution':
+			video_object.streams.get_highest_resolution().download()
+		elif option=='lowest_resolution':
+			video_object.streams.get_lowest_resolution().download()
+	if st.button("view"): 
+		st.video(path) 
+if __name__ == '__main__':
+	main()
+	
