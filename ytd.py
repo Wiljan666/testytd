@@ -1,7 +1,6 @@
 import os
 import subprocess
 import streamlit as st
-from pymsgbox import *
 
 def verwijder_temp_bestanden():
     temp_map = os.environ.get('TEMP')
